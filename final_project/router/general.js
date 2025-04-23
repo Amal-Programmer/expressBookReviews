@@ -51,6 +51,25 @@ public_users.get('/isbn/:isbn',function (req, res) {
     res.send("Wrong isbn");
   }
  });
+
+ public_users.get('/async/isbn/:isbn', (req, res) => {
+  let isbn = req.params.isbn;
+  const getBooks = ()=>{
+    return new Promise((resolve, reject)=>{
+        resolve(books);
+    });}
+  if(parseInt(isbn)>0 && parseInt(isbn)<11){
+    getBooks().then(response =>{
+        res.send(response[isbn]);
+    })
+    .catch(error=>{
+        res.status(500).json({message: "Error fetching books"});
+    })
+    
+  }else{
+    res.send("Wrong isbn");
+  }
+});
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
