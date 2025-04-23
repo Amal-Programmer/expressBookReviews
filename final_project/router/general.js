@@ -109,10 +109,32 @@ public_users.get('/title/:title',function (req, res) {
   for(let i=1; i<11;i++){
       let title_books = books[i.toString()].title.toLowerCase();
       if(title_books.includes(title)){
-          res.send(books[i.toString()]);
+          return res.send(books[i.toString()]);
       }
   }
   res.send(`Book with title ${title} not found`);
+});
+
+
+// Get all books based on title
+public_users.get('/async/title/:title',function (req, res) {
+  let title = req.params.title.replace(/[_-]/g, " ").toLowerCase(); //match any underscore or dash
+  const getBooks = ()=>{
+      return new Promise((resolve, reject)=>{
+          resolve(books);
+      });}
+  getBooks()
+  .then(response =>{
+      for(let i=1; i<11;i++){
+          let title_books = response[i.toString()].title.toLowerCase();
+          if(title_books.includes(title)){
+             return res.send(response[i.toString()]);
+          }
+      }
+      res.send(`Book with title ${title} not found`);
+  })
+  .catch(error =>{res.status(500).json({message: "Error fetching books"});
+  })
 });
 
 //  Get book review
