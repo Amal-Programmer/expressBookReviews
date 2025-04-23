@@ -10,28 +10,8 @@ public_users.post("/register", (req,res) => {
   let password = req.body.password;
   if(username && password){
     let username_exist = users.filter(user => user.username === username);
-    if(!username_exist){
-      users.push({"username":username, "password":password});
-      res.status(200).json({message: "User registered successfully"});
-    }else{
-      res.status(404).json({message:"Username already exists"});
-    }
-  }else{
-    res.status(404).json({message:"Unable to register user"});
-  }
-});
-
-
-
-public_users.post("/register", (req,res) => {
-  let username = req.body.username;
-  let password = req.body.password;
-  res.send(username);
-  if(username && password){
-    let username_exist = users.filter(user => user.username === username);
     if(username_exist.length>0){
-        res.status(404).json({message:"Username already exists"});
-     
+        res.status(404).json({message:"Username already exists"});  
     }else{
         users.push({"username":username, "password":password});
         res.status(200).json({message: "User registered successfully"});
