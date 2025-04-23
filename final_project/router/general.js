@@ -77,10 +77,29 @@ public_users.get('/author/:author',function (req, res) {
   for(let i=1; i<11;i++){
       let author_books = books[i.toString()].author.toLowerCase();
       if(author_books.includes(author)){
-          res.send(books[i.toString()]);
+          return res.send(books[i.toString()]);
       }
   }
   res.send(`${author} not found`);
+});
+
+public_users.get('/async/author/:author',function (req, res) {
+  let author = req.params.author.replace(/[_-]/g, " ").toLowerCase(); //match any underscore or dash
+  const getBooks = ()=>{
+      return new Promise((resolve, reject)=>{
+          resolve(books);
+      });}
+  getBooks()
+  .then(response =>{
+      for(let i=1; i<11;i++){
+          let author_books = response[i.toString()].author.toLowerCase();
+          if(author_books.includes(author)){
+              return res.send(response[i.toString()]);
+          }
+      }
+      res.send(`${author} not found`);
+  })
+  .catch(error=>{ res.status(500).json({message: "Error fetching books"});});
 });
 
 // Get all books based on title
