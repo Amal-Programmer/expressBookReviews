@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
@@ -24,6 +25,21 @@ public_users.post("/register", (req,res) => {
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
   res.send(JSON.stringify({books}, null, 4));
+});
+
+
+public_users.get('/async', (req,res)=>{
+  const getBooks = ()=>{
+          return new Promise((resolve, reject)=>{
+              resolve(books);
+          });
+      }
+  getBooks().then( response =>{
+      res.send(JSON.stringify(response, null, 4));
+  })
+  .catch((error)=>{
+      res.status(500).json({message:"Eroor fetching books"});
+  });  
 });
 
 // Get book details based on ISBN
